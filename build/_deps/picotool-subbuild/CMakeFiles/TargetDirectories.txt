@@ -1,3 +1,0 @@
-/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool-subbuild/CMakeFiles/picotool-populate.dir
-/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool-subbuild/CMakeFiles/edit_cache.dir
-/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool-subbuild/CMakeFiles/rebuild_cache.dir

@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool-build/enc_bootloader_mbedtls/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
