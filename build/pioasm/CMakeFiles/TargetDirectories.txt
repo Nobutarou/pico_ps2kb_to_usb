@@ -1,0 +1,7 @@
+/aur/picow_ps2kb_to_ble_usb/build/pioasm/CMakeFiles/pioasm.dir
+/aur/picow_ps2kb_to_ble_usb/build/pioasm/CMakeFiles/edit_cache.dir
+/aur/picow_ps2kb_to_ble_usb/build/pioasm/CMakeFiles/rebuild_cache.dir
+/aur/picow_ps2kb_to_ble_usb/build/pioasm/CMakeFiles/list_install_components.dir
+/aur/picow_ps2kb_to_ble_usb/build/pioasm/CMakeFiles/install.dir
+/aur/picow_ps2kb_to_ble_usb/build/pioasm/CMakeFiles/install/local.dir
+/aur/picow_ps2kb_to_ble_usb/build/pioasm/CMakeFiles/install/strip.dir

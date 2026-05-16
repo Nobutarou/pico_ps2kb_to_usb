@@ -1,0 +1,5 @@
+/aur/picow_ps2kb_to_ble_usb/build/pioasm-install/pioasm/pioasm
+/aur/picow_ps2kb_to_ble_usb/build/pioasm-install/pioasm/pioasmTargets.cmake
+/aur/picow_ps2kb_to_ble_usb/build/pioasm-install/pioasm/pioasmTargets-release.cmake
+/aur/picow_ps2kb_to_ble_usb/build/pioasm-install/pioasm/pioasmConfig.cmake
+/aur/picow_ps2kb_to_ble_usb/build/pioasm-install/pioasm/pioasmConfigVersion.cmake

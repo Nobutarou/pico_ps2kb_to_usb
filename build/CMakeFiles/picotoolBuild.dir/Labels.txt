@@ -1,0 +1,14 @@
+# Target labels
+ picotoolBuild
+# Source files and their labels
+/aur/picow_ps2kb_to_ble_usb/build/CMakeFiles/picotoolBuild
+/aur/picow_ps2kb_to_ble_usb/build/CMakeFiles/picotoolBuild.rule
+/aur/picow_ps2kb_to_ble_usb/build/CMakeFiles/picotoolBuild-complete.rule
+/aur/picow_ps2kb_to_ble_usb/build/picotool/src/picotoolBuild-stamp/picotoolBuild-build.rule
+/aur/picow_ps2kb_to_ble_usb/build/picotool/src/picotoolBuild-stamp/picotoolBuild-configure.rule
+/aur/picow_ps2kb_to_ble_usb/build/picotool/src/picotoolBuild-stamp/picotoolBuild-download.rule
+/aur/picow_ps2kb_to_ble_usb/build/picotool/src/picotoolBuild-stamp/picotoolBuild-install.rule
+/aur/picow_ps2kb_to_ble_usb/build/picotool/src/picotoolBuild-stamp/picotoolBuild-mkdir.rule
+/aur/picow_ps2kb_to_ble_usb/build/picotool/src/picotoolBuild-stamp/picotoolBuild-patch.rule
+/aur/picow_ps2kb_to_ble_usb/build/picotool/src/picotoolBuild-stamp/picotoolBuild-test.rule
+/aur/picow_ps2kb_to_ble_usb/build/picotool/src/picotoolBuild-stamp/picotoolBuild-update.rule

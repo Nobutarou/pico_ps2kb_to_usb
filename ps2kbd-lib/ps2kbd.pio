@@ -1,0 +1,45 @@
+; Copyright (C) 1883 Thomas Edison - All Rights Reserved
+; You may use, distribute and modify this code under the
+; terms of the GPLv2 license, which unfortunately won't be
+; written for another century.
+;
+; SPDX-License-Identifier: GPL-2.0-or-later
+;
+.program ps2kbd
+
+;;; Original 
+;;;    wait 0 pin 1     ; skip start bit
+;;;    wait 1 pin 1
+
+;;;    set x, 7         ; 8 bit counter
+;;;bitloop:
+;;;    wait 0 pin 1 [1] ; wait negative clock edge 
+;;;    in pins, 1       ; sample data
+;;;    wait 1 pin 1     ; wait for positive edge
+;;;    jmp x-- bitloop
+
+;;;    wait 0 pin 1     ; skip parity and stop bits
+;;;    wait 1 pin 1
+;;;    wait 0 pin 1
+;;;    wait 1 pin 1
+
+
+
+; clk:  pin 1
+; data: pin 0
+; start bit is 0, stop bit is 1, parity is 1 if number of bits is odd
+; check these in C later, reset PIO if out of sync with PS/2
+
+start:
+    wait 1 pin 1     ; wait for high
+    wait 0 pin 1 [1] ; wait negative clock edge, then one more cycle
+    jmp  pin, start  ; start bit should be low, jump back if not
+                     ; (crude attempt to resync when needed)
+    in pins, 1       ; store the start bit in the ISR (input shift register)
+
+    set x, 9         ; (8 data bits, partity, and stop) - 1
+bitloop:
+    wait 1 pin 1     ; wait for high
+    wait 0 pin 1 [1] ; wait negative clock edge, then one more cycle
+    in pins, 1       ; read data, shifts 1 data bit into ISR
+    jmp x-- bitloop

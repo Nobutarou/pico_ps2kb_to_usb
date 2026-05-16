@@ -1,0 +1,64 @@
+
+---
+events:
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:12 (find_program)"
+      - "CMakeLists.txt:16 (project)"
+    mode: "program"
+    variable: "CMAKE_UNAME"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "uname"
+    candidate_directories:
+      - "/bin/"
+      - "/usr/bin/"
+      - "/usr/local/bin/"
+      - "/home/snob/.local/bin/"
+      - "/sbin/"
+      - "/usr/sbin/"
+      - "/usr/local/sbin/"
+      - "/opt/microchip/xc8/v2.45/bin/"
+      - "/opt/microchip/xc16/v2.10/bin/"
+      - "/opt/microchip/xc32/v4.35/bin/"
+      - "/opt/FreeBASIC-1.10.1/bin/"
+      - "/opt/GCBASIC/"
+    found: "/bin/uname"
+    search_context:
+      ENV{PATH}:
+        - "/bin"
+        - "/usr/bin"
+        - "/usr/local/bin"
+        - "/home/snob/.local/bin"
+        - "/sbin"
+        - "/usr/sbin/"
+        - "/usr/local/sbin"
+        - "/opt/microchip/xc8/v2.45/bin/"
+        - "/opt/microchip/xc16/v2.10/bin/"
+        - "/opt/microchip/xc32/v4.35/bin/"
+        - "/opt/microchip/xc8/v2.45/bin/"
+        - "/opt/microchip/xc16/v2.10/bin/"
+        - "/opt/microchip/xc32/v4.35/bin/"
+        - "/opt/microchip/xc8/v2.45/bin/"
+        - "/opt/microchip/xc16/v2.10/bin/"
+        - "/opt/microchip/xc32/v4.35/bin/"
+        - "/home/snob/.local/bin"
+        - "/opt/FreeBASIC-1.10.1/bin/"
+        - "/opt/GCBASIC/"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:212 (message)"
+      - "CMakeLists.txt:16 (project)"
+    message: |
+      The system is: Linux - 7.0.3ore1 - x86_64
+...

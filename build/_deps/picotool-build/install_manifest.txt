@@ -1,0 +1,7 @@
+/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool/picotool
+/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool/picotoolTargets.cmake
+/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool/picotoolTargets-release.cmake
+/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool/picotoolConfig.cmake
+/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool/picotoolConfigVersion.cmake
+/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool/enc_bootloader.elf
+/aur/picow_ps2kb_to_ble_usb/build/_deps/picotool/enc_bootloader_mbedtls.elf

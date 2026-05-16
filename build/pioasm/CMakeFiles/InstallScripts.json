@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/aur/picow_ps2kb_to_ble_usb/build/pioasm/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
