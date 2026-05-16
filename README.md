@@ -22,3 +22,7 @@ https://github.com/rowol/picow_ps2kb_to_ble_usb
   - オリジナルは、「何もしない」。たぶん嫌いなんだと思います。
 - JIS 専用キーを追加
 
+# 変更対象のソース
+
+- [CMakeLists.txt](./CMakeLists.txt) を書き換えて USB 対応、Pico 対応をする
+- [ps2kbd-lib/ps2.c](./ps2kbd-lib/ps2.c) で、PS/2 スキャンコードと HIS コードの対応を作る
