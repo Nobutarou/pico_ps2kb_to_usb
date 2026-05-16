@@ -72,7 +72,7 @@
 #define HID_KEY_BACKSLASH       0x31
 #define HID_KEY_SEMICOLON       0x33
 #define HID_KEY_APOSTROPHE      0x34
-#define HID_KEY_GRAVE           0x35
+#define HID_KEY_GRAVE           0x35 // 全角半角のこと。大丈夫
 #define HID_KEY_COMMA           0x36
 #define HID_KEY_PERIOD          0x37
 #define HID_KEY_SLASH           0x38
