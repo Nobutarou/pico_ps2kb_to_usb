@@ -476,6 +476,17 @@ static void handle_scancode(uint8_t code, bool is_break, bool is_extended)
 // Public Interface
 //--------------------------------------------------------------------+
 
+// C でコンパイル、C++ でリンクということをやると、これをしないとエラーになるみたい
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern void kbd_write_byte(uint8_t byte); // ps2kbd.c に実定義があるだけだから。
+
+#ifdef __cplusplus
+}
+#endif
+
 void ps2_init(void)
 {
    // Initialize state
