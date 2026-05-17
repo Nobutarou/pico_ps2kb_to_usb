@@ -191,7 +191,7 @@ static const uint8_t scancode_to_hid[256] = {
     [0x2B] = HID_KEY_F,
     [0x2C] = HID_KEY_T,
     [0x2D] = HID_KEY_R,
-    [0x2E] = HID_KEY_5,
+    [0x2E] = HID_KEY_5, // ----- ここまで確認済み
 
     // 0x30-0x3F
     [0x31] = HID_KEY_N,
