@@ -476,16 +476,7 @@ static void handle_scancode(uint8_t code, bool is_break, bool is_extended)
 // Public Interface
 //--------------------------------------------------------------------+
 
-// C でコンパイル、C++ でリンクということをやると、これをしないとエラーになるみたい
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-extern void kbd_write_byte(uint8_t byte); // ps2kbd.c に実定義があるだけだから。
-
-#ifdef __cplusplus
-}
-#endif
+extern void ore_kbd_write_byte(uint8_t byte); // ps2kbd.c に実定義があるだけだから。
 
 void ps2_init(void)
 {
@@ -506,8 +497,8 @@ void ps2_init(void)
    // まじめにやってみる
 
    // リセット信号を送る
-   // kbd_write_byte() は ps2kbd.c に定義がある。
-   kbd_write_byte(0xFF);
+   // ore_kbd_write_byte() は ps2kbd.c に定義がある。
+   ore_kbd_write_byte(0xFF);
 
    uint8_t initCode = 0;
     
@@ -528,7 +519,7 @@ void ps2_init(void)
      } 
      else {
        // 予期せぬデータが来たら、もう一度リセット
-       kbd_write_byte(0xFF);
+       ore_kbd_write_byte(0xFF);
      }
   }
 

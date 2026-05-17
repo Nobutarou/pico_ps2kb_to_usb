@@ -37,5 +37,6 @@ https://github.com/rowol/picow_ps2kb_to_ble_usb
   - kbd_write_byte() 関数はある。
   - kbd_ready() が名前と裏腹に scancode を取得する
 - Pause キーを真面目に処理するなら ps2.c の ps2_task() 関数内でやるべきだろう。
-
+  - やるなら E1 が来たら 7回スルーすれば良い
+  - 物理的に押せなくしてあるから、やらない
 

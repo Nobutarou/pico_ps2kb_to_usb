@@ -247,6 +247,67 @@ static void kbd_write_byte(uint8_t c)
 // pio_sm_restart(kbd_pio, kbd_sm);   //Don't dump the fifo (?)
 }
 
+// kbd_write_byte のコピー
+// ps2.c でも使いたいから, static を外す。
+void ore_kbd_write_byte(uint8_t c)
+{
+   //Disable PIO reading PS/2 (?)
+   pio_sm_set_enabled(kbd_pio, kbd_sm, false);
+
+
+   // Setup GPIOs for output
+   gpio_set_dir(PS2_CLK_GPIO, GPIO_OUT);
+
+   //Pull CLK line low (for at least 100us) to inhibit communication from device
+   gpio_put(PS2_CLK_GPIO, 0);
+   busy_wait_us(100);
+
+   //Set CLK line high and DATA low (start bit)
+   //Host request to send, causes kb to start generating clock pulses
+   gpio_set_dir(PS2_DAT_GPIO, GPIO_OUT);
+   gpio_put(PS2_DAT_GPIO, 0);             //This will be the start bit
+   gpio_set_dir(PS2_CLK_GPIO, GPIO_IN);   //(Sets CLK high, PS/2 lines are pulled up)
+   gpio_pull_up(PS2_CLK_GPIO);
+
+
+   //Clock should be high now, and start bit is on the data line
+   //(already looping through the bits, so might as well count the high bits here
+   // rather than using the __builtin_popcount(byte) function)
+   int ctHigh=0;
+   for (int x=0; x<8; x++) {
+      kbd_write_bit(c & 1);
+      ctHigh += c&1;
+      c >>= 1;                   //Next bit
+   }
+
+   kbd_write_bit(ctHigh^1);      //Send odd parity (1 if even number of set bits, 0 if odd)
+   kbd_write_bit(1);             //Stop bit
+
+   //Wait for clock rising edge (?)
+   while (gpio_get(PS2_CLK_GPIO)!=1)
+      busy_wait_us(1);
+
+   //Set DAT back to input, to read ACK bit
+   gpio_set_dir(PS2_DAT_GPIO, GPIO_IN);
+   gpio_pull_up(PS2_DAT_GPIO);
+
+   //Device acknowledge bit is special, device puts it out on the rising edge
+   while (gpio_get(PS2_CLK_GPIO)!=1)      //Rising
+      busy_wait_us(1);
+   while (gpio_get(PS2_CLK_GPIO)!=0)      //Falling
+      busy_wait_us(1);
+   if (0!=gpio_get(PS2_DAT_GPIO))
+      printf("Bad device ACK bit\n");
+   while (gpio_get(PS2_DAT_GPIO)!=1)      //Wait for ACK pulse to end
+      busy_wait_us(1);
+
+
+   //Reset PS/2 PIO ?
+   pio_sm_set_enabled(kbd_pio, kbd_sm, true);
+   kbd_reset();
+// pio_sm_restart(kbd_pio, kbd_sm);   //Don't dump the fifo (?)
+}
+
 
 
 //Writes keyboard leds

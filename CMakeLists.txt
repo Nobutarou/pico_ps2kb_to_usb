@@ -1,6 +1,7 @@
 # Modified CMakeLists.txt, copied from $/ble_usb_hid.git and modified
 
-set(PROJECT ps2_ble_kb)
+#set(PROJECT ps2_ble_kb)
+set(PROJECT ps2_usb_kb)
 cmake_minimum_required(VERSION 3.13)
 
 # -----------------------
