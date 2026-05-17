@@ -5,7 +5,7 @@
  * Converts PS/2 Set 2 scancodes to USB HID keycodes
  * Designed for BMC64 compatibility (Boot Keyboard protocol)
  */
-
+ 
 #include <stdio.h>
 #include <string.h>
 #include "ps2.h"
