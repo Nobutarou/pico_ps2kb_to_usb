@@ -22,6 +22,9 @@ https://github.com/rowol/picow_ps2kb_to_ble_usb
   - オリジナルは、「何もしない」。たぶん嫌いなんだと思います。
 - JIS 専用キーを追加
 - Print screen を追加
+- リセット掛けてから 0xAA (準備OK) を待つことにする
+  - オリジナルは、キーボードに対しては何も働き掛けない。
+  - [atudb_jp](https://github.com/Nobutarou/at2usb_jp) と同様の処理
 
 # ソースに関するメモ
 
@@ -33,6 +36,6 @@ https://github.com/rowol/picow_ps2kb_to_ble_usb
 - 0xFF を送って 0xAA を待つような処理はしていない
   - kbd_write_byte() 関数はある。
   - kbd_ready() が名前と裏腹に scancode を取得する
-
+- Pause キーを真面目に処理するなら ps2.c の ps2_task() 関数内でやるべきだろう。
 
 

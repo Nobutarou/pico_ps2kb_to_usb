@@ -66,12 +66,13 @@
 #define HID_KEY_TAB             0x2B
 #define HID_KEY_SPACE           0x2C
 #define HID_KEY_MINUS           0x2D
-#define HID_KEY_EQUAL           0x2E
-#define HID_KEY_BRACKET_LEFT    0x2F
-#define HID_KEY_BRACKET_RIGHT   0x30
-#define HID_KEY_BACKSLASH       0x31
+#define HID_KEY_EQUAL           0x2E // jp106 で "^". 
+#define HID_KEY_BRACKET_LEFT    0x2F // jp106 だと "@"。名前は変だが、
+#define HID_KEY_BRACKET_RIGHT   0x30 // jp106 では "[". OK
+//#define HID_KEY_BACKSLASH       0x31
+#define HID_KEY_BACKSLASH       0x87 // jp106 
 #define HID_KEY_SEMICOLON       0x33
-#define HID_KEY_APOSTROPHE      0x34
+#define HID_KEY_APOSTROPHE      0x34 // jp106 だと":" キーのこと。名前は変だが
 #define HID_KEY_GRAVE           0x35 // 全角半角のこと。大丈夫
 #define HID_KEY_COMMA           0x36
 #define HID_KEY_PERIOD          0x37
@@ -170,6 +171,7 @@ static const uint8_t scancode_to_hid[256] = {
     // 0x10-0x1F
     [0x11] = 0xFF,  // Left Alt (handled as modifier)
     [0x12] = 0xFE,  // Left Shift (handled as modifier)
+    [0x13] = 0x88,  // ひらがなカタカナ
     [0x14] = 0xFD,  // Left Ctrl (handled as modifier)
     [0x15] = HID_KEY_Q,
     [0x16] = HID_KEY_1,
@@ -191,7 +193,7 @@ static const uint8_t scancode_to_hid[256] = {
     [0x2B] = HID_KEY_F,
     [0x2C] = HID_KEY_T,
     [0x2D] = HID_KEY_R,
-    [0x2E] = HID_KEY_5, // ----- ここまで確認済み
+    [0x2E] = HID_KEY_5, 
 
     // 0x30-0x3F
     [0x31] = HID_KEY_N,
@@ -221,18 +223,22 @@ static const uint8_t scancode_to_hid[256] = {
     [0x4E] = HID_KEY_MINUS,
 
     // 0x50-0x5F
-    [0x52] = HID_KEY_APOSTROPHE,
-    [0x54] = HID_KEY_BRACKET_LEFT,
-    [0x55] = HID_KEY_EQUAL,
-    [0x58] = 0xFC,  // Caps Lock (handled specially)
+    [0x51] = HID_KEY_BACKSLASH, //0x87
+    [0x52] = HID_KEY_APOSTROPHE, //0x34
+    [0x54] = HID_KEY_BRACKET_LEFT, //0x2F
+    [0x55] = HID_KEY_EQUAL, //0x2e
+    [0x58] = 0xF8,  // caps は win とする。詳細は get_modifier_mask
     [0x59] = 0xFB,  // Right Shift (handled as modifier)
     [0x5A] = HID_KEY_ENTER,
-    [0x5B] = HID_KEY_BRACKET_RIGHT,
-    [0x5D] = HID_KEY_BACKSLASH,
+    [0x5B] = HID_KEY_BRACKET_RIGHT, // 0x30
+    [0x5D] = 0x32, // jp106 では "]" で HID は 0x32
 
     // 0x60-0x6F
+    [0x64] = 0x8A, // 変換
     [0x66] = HID_KEY_BACKSPACE,
+    [0x67] = 0x8B, // 無変換
     [0x69] = HID_KEY_KEYPAD_1,
+    [0x6A] = 0x89, // 円マーク
     [0x6B] = HID_KEY_KEYPAD_4,
     [0x6C] = HID_KEY_KEYPAD_7,
 
@@ -279,6 +285,7 @@ static const uint8_t extended_scancode_to_hid[256] = {
     [0x74] = HID_KEY_ARROW_RIGHT,
     [0x75] = HID_KEY_ARROW_UP,
     [0x7A] = HID_KEY_PAGE_DOWN,
+    [0x7C] = HID_KEY_PRINT_SCREEN, 
     [0x7D] = HID_KEY_PAGE_UP,
 };
 
@@ -483,6 +490,37 @@ void ps2_init(void)
    g_num_lock_led = false;   // I'm assuming that's how host initializes them)
    g_scroll_lock_led = false;
    update_leds();
+
+   // ここまで pico 側で変数を初期化しただけでキーボードの初期化はまったくやってない
+   // まじめにやってみる
+
+   // リセット信号を送る
+   // kbd_write_byte() は ps2kbd.c に定義がある。
+   kbd_write_byte(0xFF);
+
+   uint8_t initCode = 0;
+    
+   while (1) {
+     // kbd_ready() も ps2kbd.c に定義がある。
+     // 名前とは裏腹に ps/2 スキャンコードを返してくるはず
+     // kbd_ready() を超高速で呼び出し続けて、データが来るのを待つ（while空回り）
+     while ((initCode = kbd_ready()) == 0) {
+            // PIOのバッファが空の間は、ここでただ待つ
+        }
+
+     // 届いたデータ（initCode）を分析する
+     if (initCode == 0xAA) {
+       break; // 0xAA はキーボードからの準備 OK のサイン。while(1) を抜ける
+     } 
+     else if (initCode == 0xFA) {
+       // 0xFA は AcK 受けとりのサイン。何もせず待つ。
+     } 
+     else {
+       // 予期せぬデータが来たら、もう一度リセット
+       kbd_write_byte(0xFF);
+     }
+  }
+
 }
 
 
