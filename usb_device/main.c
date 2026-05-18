@@ -151,6 +151,7 @@ void tud_hid_set_report_cb(uint8_t /*instance*/, uint8_t /*report_id*/, hid_repo
 int main(void) 
 {
    stdio_init_all();
+
    kbd_init();
 
    tud_init(BOARD_TUD_RHPORT);  // init device stack on configured roothub port

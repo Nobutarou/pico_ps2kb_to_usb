@@ -25,44 +25,57 @@
 // GPIO number of data pin, clk pin must be on next adjacent GPIO
 #define KB_DAT_GPIO 14 // PS/2 data
 //#define CLK_GPIO 15  // PS/2 clock (RSW: This is not used, kbd_init uses DAT_GPIO+1 for the clock)
+#define PS2_DAT_GPIO 14 
+#define PS2_CLK_GPIO 15 // 直接指定でいいだろう
 
 
 
 static PIO kbd_pio;         // pio0 or pio1
 static uint kbd_sm;         // pio state machine index
-static uint base_gpio;      // data signal gpio #
 
-
+// これに KB_DAT_GPIO つまり 14 を入れるんだが、気持悪い。
+//static uint base_gpio;      // data signal gpio #
 
 void kbd_init(void)
 {
    kbd_pio = KB_PIO;
-   base_gpio = KB_DAT_GPIO;   // base_gpio is data signal, base_gpio+1 is clock signal
+   // 気持悪い
+   // base_gpio = KB_DAT_GPIO;   // base_gpio is data signal, base_gpio+1 is clock signal
+   
    // init KBD pins to input
-   gpio_init(base_gpio);
-   gpio_init(base_gpio + 1);
+   // gpio_init(base_gpio);
+   // gpio_init(gpio + 1);
+   gpio_init(PS2_DAT_GPIO);
+   gpio_init(PS2_CLK_GPIO);
+   
    // with pull up
-   gpio_pull_up(base_gpio);
-   gpio_pull_up(base_gpio + 1);
+   // gpio_pull_up(base_gpio);
+   // gpio_pull_up(base_gpio + 1);
+   gpio_pull_up(PS2_DAT_GPIO);
+   gpio_pull_up(PS2_CLK_GPIO);
+
    // get a state machine
    kbd_sm = pio_claim_unused_sm(kbd_pio, true);
    // reserve program space in SM memory
    uint offset = pio_add_program(kbd_pio, &ps2kbd_program);
+   
    // Set pin directions base
-   pio_sm_set_consecutive_pindirs(kbd_pio, kbd_sm, base_gpio, 2, false);
+   // pio_sm_set_consecutive_pindirs(kbd_pio, kbd_sm, base_gpio, 2, false);
+   pio_sm_set_consecutive_pindirs(kbd_pio, kbd_sm, PS2_DAT_GPIO, 2, false);
    // program the start and wrap SM registers
    pio_sm_config c = ps2kbd_program_get_default_config(offset);
+   
    // Set the base input pin. pin index 0 is DAT, index 1 is CLK
-   sm_config_set_in_pins(&c, base_gpio);
+   // sm_config_set_in_pins(&c, base_gpio);
+   sm_config_set_in_pins(&c, PS2_DAT_GPIO);
    // Shift 8 bits to the right, autopush enabled
    sm_config_set_in_shift(&c, true, true, 1 + 8 + 1 + 1);  // Include start, 8 data, parity, and stop bits
 
    // RSW set up pin to use for jumps
    //  Crucially, configure which specific pin the JMP PIN instruction will read
    //  (All pins are visible to PIO input logic, shouldn't need to pio_gpio_init or gpio_set_dir on the pin)
-   sm_config_set_jmp_pin(&c, base_gpio);  // Use the data pin for "jmp pin" tests
-   // pio_gpio_init(kbd_pio, base_gpio);
-   // gpio_set_dir(base_gpio, GPIO_IN);
+   // sm_config_set_jmp_pin(&c, base_gpio);  // Use the data pin for "jmp pin" tests
+   sm_config_set_jmp_pin(&c, PS2_DAT_GPIO);  // Use the data pin for "jmp pin" tests
 
    // Deeper FIFO as we're not doing any TX
    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_RX);
@@ -151,8 +164,9 @@ uint8_t kbd_getc(void)
 #define NUM_LOCK_MASK      0x02
 #define SCROLL_LOCK_MASK   0x01
 
-#define PS2_DAT_GPIO       (base_gpio)
-#define PS2_CLK_GPIO       (base_gpio+1)
+// 気持ち悪い。最初から直接指定で行くから、もっと前に書く。
+//#define PS2_DAT_GPIO       (base_gpio)
+//#define PS2_CLK_GPIO       (base_gpio+1)
 
 //PS/2 spec says for host to device, write data on the falling clk edge
 //and kb will read on the rising edge
