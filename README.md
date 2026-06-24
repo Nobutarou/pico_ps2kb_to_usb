@@ -1,70 +1,122 @@
 # これは何
 
-オリジナルはこちらです。
+オリジナルはこちらです。Gighub のお作法とか分からないのでフォークの機能とか使ってません。
 https://github.com/rowol/picow_ps2kb_to_ble_usb
 
 こちらは pico w を使って Bluetooth にも対応してますが、pico w が microB なのが嫌なので、秋
-月の RP2040 マイコンボードキット (Pico 相当) で動かせるように、しようとしています。
+月の RP2040 マイコンボードキット (Pico 相当) で動かせるようにして、日本語 JP106 配列に対応
+しようとしています。
 
-オリジナルの README.md はこちらです。
-[README.org.md](./README.org.md)
+内容はこちらです。[Kaihatsu.md](./Kaihatsu.md)
 
 # 注意
 
-- まだ検討してるだけで、実際の動作は不明です。
 - 自分のことで精一杯です。
-  - 参考にしてもらえたら嬉しいですが、Issue とか Commit とかは送られても対処できません。
+- 参考にしてもらえたら嬉しいですが、Issue とかプルリクとかは送られても対処する能力がありま
+  せん。
+- GPL 3.0 ですから、どうぞ好きなように改変してください。
 
-# 対象キーボードとチューニング
+以下オリジナルの README の転載です。
 
-- Justy JKB-89S 
-- Caps lock は 左田キー
-  - オリジナルは、「何もしない」。たぶん嫌いなんだと思います。
-- JIS 専用キーを追加
-- Print screen を追加
-- リセット掛けてから 0xAA (準備OK) を待つことにする
-  - オリジナルは、キーボードに対しては何も働き掛けない。
-  - [atudb_jp](https://github.com/Nobutarou/at2usb_jp) と同様の処理
+<br><br><br>
 
-# ソースに関するメモ
+# Description
 
-- [CMakeLists.txt](./CMakeLists.txt) を書き換えて USB 対応、Pico 対応をする
-- [ps2kbd-lib/ps2.c](./ps2kbd-lib/ps2.c) で、PS/2 スキャンコードと HIS コードの対応を作る
-  - [ps/2 スキャンコード](https://www.ne.jp/asahi/shared/o-family/ElecRoom/AVRMCOM/PS2_RS232C/KeyCordList.pdf)
-  - [hid コード](https://bsakatu.net/doc/usb-hid-to-scancode/)
-  - にらめっこ
-- 0xFF を送って 0xAA を待つような処理はしていない
-  - kbd_write_byte() 関数はある。
-  - kbd_ready() が名前と裏腹に scancode を取得する
-- Pause キーを真面目に処理するなら ps2.c の ps2_task() 関数内でやるべきだろう。
-  - やるなら E1 が来たら 7回スルーすれば良い
-  - 物理的に押せなくしてあるから、やらない
+This Raspberry Pi Pico W C SDK  project converts a PS/2 keyboard to either a BLE or a USB keyboard.   It uses a PIO state machine to read the PS/2 stream.
 
-# ハード 1.0
+<br>For development I used:
+* Raspberry Pi Pico W
+* Microsoft Natural Keyboard Elite keyboard (KU-0045, "white speedbump")
 
-AE-RP2040 の上にソケットを出すか、下にヘッダを出すか悩んだが、RUN (リセット) ピンが横に出
-ていないため、上に何か載せると、指が入らずリセットできなくなるかもしれない。そこで、下にピ
-ンを出すことにする。
+<br>For testing:
+* Checked BLE bridge function with an Android phone
+* Checked USB bridge function with a Linux laptop.
 
-それで、ソケットは長いやつにしようと思う。AE-RP2040 はけっこう大きいから、その下に配線詰め
-込めないのは勿体ない。
 
-あと、Pico は一応 GPIO 3.3V だから、ツェナーを入れることにする。オリジナルの作者さんは直結
-してるみたいに思うから、動くんだろうし 1kΩとか入れておけば、まず壊れることは無いとは思う
-けど、Pico の下はスペースがあるので、削る必要もない。
+# <br>Build 
 
-[回路図](./hard/v1.0/Pico_Ps2kb_to_USB_1.0/Pico_Ps2kb_to_USB_1.0_Schematics.pdf)
+Built with [Raspberry Pi Pico C SDK 2.2.1](https://github.com/raspberrypi/pico-sdk).  It may work with other versions of the SDK 
 
-[設計図](./hard/v1.0/hard_v1.0.pdf)
 
-部品表
+Standard cmdline CMake build using the Pico C SDK. 
+<br>Export PICO_SDK_PATH environment variable to point to your SDK.
 
-| 記号 | 品目、品名、品番等 | 個数 |
-| ---  | ---  | --- |
-| B1 | ユニバーサル基板 17x8P | 1 |
-| D1,2 | ツェナー 3.3V | 2 |
-| R1,2 | 抵抗 300Ω | 2 |
-| S1-4 | ピンソケット 2P | 4 |
-| X1 | X1 ポスト 4P | 1 |
+I used [this Docker image](https://github.com/lukstep/raspberry-pi-pico-docker-sdk)
+to make a container.  It contains an old version of the C SDK: I manually installed the current/newer version.
 
-![完成品](./hard/v1.0/hard_v1.0.jpg)
+<br>**Configuring the Build**
+
+* To select between a BLE or USB keyboard, set the DEVICE_TYPE variable in the top level CMakeLists.txt  
+(defaults to BLE)
+* To change which PIO or which GPIOs the PS/2 keyboard interface uses, edit the ps2kbd-lib/ps2kbd.c file constant defintions  
+(defaults to PIO=1, KB_DAT_GPIO=14, KB_CLK_GPIO=15)
+* **TBD: Move NO_PS2_WRITES in ps2kbd-lib to top CMakeLists.txt also**  
+(Define NO_PS2_WRITES in ps2kbd-lib CMakeLists.txt to disable all PS/2 writes and turn off the keyboard status LEDS)
+
+<br>**Any time you change the configuration in the CMakeLists.txt, you should run:**  
+($ is the top level of your repository clone)
+
+    cd $
+    rm -rf build
+    mkdir build; cd build
+    cmake ..
+    make
+
+
+
+
+<br>**First time Build**  
+($ is the top level of your repository clone)
+
+    cd $
+    mkdir build; cd build
+    cmake ..
+    make
+
+
+# <br>Connections
+
+![image](td_libs_PS2Keyboard_pins.jpg)
+
+<br>I built a simple adapter board to connect my PS/2 keyboard to the Pico W
+
+| PS/2 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | PICO W Pin &nbsp; &nbsp; &nbsp; | Pico Signal |
+| :----------- | :---------- | :-------|
+| Data | 19 | GPIO14 |
+| CLK  | 20 | GPIO15 |
+| 5V   | 40 | VBUS   |
+| GND  | 18 | GND, many other choices | 
+
+<br>I ran my keyboard off the 5V VBUS output from the Pico W, which is powered by the USB port.   It could
+be more robust to use an external 5V supply to run the Pico and keyboard: possibly not all keyboards 
+will work off VBUS.  Current limit is determined by the USB port, standard USB 2.0 is 500mA. 
+
+
+# <br>Notes
+
+* PS/2 library also writes the PS/2 stream (used to set the KB leds.)  Currently implemented as a quick hack with bit-banging, eventually I will use the PIO for this also.
+
+
+
+
+# <br>Links
+
+This project uses modified code from several repositories, as well as original code:
+
+* [PS/2 to USB HID Keyboard Bridge for Raspberry Pi Pico 2](https://github.com/CCappsDevelopment/pico-ps2-usb-kbd-bridge) 
+  Used  key scancode to USB HID code translation in BLE device. (BLE GATT uses the same HID codes as USB)   Also used 
+  the USB descriptors, tiny USB config and USB main from this sample
+  in the USB bridge version
+  
+* [BTStack HID Keyboard example](https://github.com/bluekitchen/btstack/blob/master/example/hid_keyboard_demo.c) 
+  Used HID over GATT BLE code  
+  (included in the [Pico W Bluetooth examples](https://github.com/raspberrypi/pico-examples) )
+
+* [ps2kbd-lib](https://github.com/lurk101/ps2kbd-lib/tree/7409b5572734b0dd7577b63319d93c66914f2141) Used structure of 
+  PIO PS/2 code, improved PIO assembler and associated C input processing, added PS/2 write code.
+
+
+<br><br><br><br><br>
+
+
+

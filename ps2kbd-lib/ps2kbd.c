@@ -33,13 +33,14 @@
 static PIO kbd_pio;         // pio0 or pio1
 static uint kbd_sm;         // pio state machine index
 
-// これに KB_DAT_GPIO つまり 14 を入れるんだが、気持悪い。
+// これに KB_DAT_GPIO つまり 14 を入れるんだが、まあ PS2_DAT_GPIO 使うほうが誤解が少ないの
+// ではないかなと思った。
 //static uint base_gpio;      // data signal gpio #
 
 void kbd_init(void)
 {
    kbd_pio = KB_PIO;
-   // 気持悪い
+   // PS2_DAT_GPIO と PS2_CLK_GPIO だけで書く方が、明快な気がする。
    // base_gpio = KB_DAT_GPIO;   // base_gpio is data signal, base_gpio+1 is clock signal
    
    // init KBD pins to input
